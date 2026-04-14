@@ -2,9 +2,11 @@ package order;
 
 import client.OrderClient;
 import client.UserClient;
+import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import model.Order;
 import model.User;
+import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,45 +37,50 @@ public class OrderCreateTest {
 
     @Test
     @DisplayName("Создание заказа с авторизацией")
-    public void createOrderWithAuthReturns200() {
+    @Description("Проверяет создание заказа с токеном авторизации, ожидается код 200")
+    public void createOrderWithAuthReturns200Test() {
         Order order = new Order(List.of("61c0c5a71d1f82001bdaaa6d", "61c0c5a71d1f82001bdaaa6f"));
         orderClient.create(order, accessToken)
-                .then().statusCode(200)
+                .then().statusCode(HttpStatus.SC_OK)
                 .body("success", equalTo(true));
     }
 
     @Test
     @DisplayName("Создание заказа без авторизации")
-    public void createOrderWithoutAuthReturns200() {
+    @Description("Проверяет создание заказа без токена авторизации, ожидается код 200")
+    public void createOrderWithoutAuthReturns200Test() {
         Order order = new Order(List.of("61c0c5a71d1f82001bdaaa6d"));
         orderClient.createWithoutAuth(order)
-                .then().statusCode(200)
+                .then().statusCode(HttpStatus.SC_OK)
                 .body("success", equalTo(true));
     }
 
     @Test
     @DisplayName("Создание заказа с ингредиентами")
-    public void createOrderWithIngredientsReturns200() {
+    @Description("Проверяет создание заказа с корректными ингредиентами, ожидается код 200")
+    public void createOrderWithIngredientsReturns200Test() {
         Order order = new Order(List.of("61c0c5a71d1f82001bdaaa6d"));
         orderClient.create(order, accessToken)
-                .then().statusCode(200)
+                .then().statusCode(HttpStatus.SC_OK)
                 .body("success", equalTo(true));
     }
 
     @Test
     @DisplayName("Создание заказа без ингредиентов")
-    public void createOrderWithoutIngredientsReturns400() {
+    @Description("Проверяет создание заказа с пустым списком ингредиентов, ожидается код 400")
+    public void createOrderWithoutIngredientsReturns400Test() {
         Order order = new Order(List.of());
         orderClient.create(order, accessToken)
-                .then().statusCode(400)
+                .then().statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body("message", equalTo("Ingredient ids must be provided"));
     }
 
     @Test
     @DisplayName("Создание заказа с неверным хешем ингредиентов")
-    public void createOrderWithWrongIngredientsReturns400() {
-        Order order = new Order(List.of("wronghash123"));
+    @Description("Проверяет создание заказа с невалидным хешем ингредиентов, ожидается код 400")
+    public void createOrderWithWrongIngredientsReturns400Test() {
+        Order order = new Order(List.of("5f606f7b97114b001046a828"));
         orderClient.create(order, accessToken)
-                .then().statusCode(400);
+                .then().statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 }

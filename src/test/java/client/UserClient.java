@@ -3,6 +3,7 @@ package client;
 import io.restassured.response.Response;
 import model.User;
 
+import static client.Endpoints.*;
 import static io.restassured.RestAssured.given;
 
 public class UserClient {
@@ -13,19 +14,19 @@ public class UserClient {
         return given()
                 .header("Content-type", "application/json")
                 .body(user)
-                .post(BASE_URL + "/api/auth/register");
+                .post(BASE_URL + REGISTER);
     }
 
     public Response login(User user) {
         return given()
                 .header("Content-type", "application/json")
                 .body(user)
-                .post(BASE_URL + "/api/auth/login");
+                .post(BASE_URL + LOGIN);
     }
 
     public void delete(String accessToken) {
         given()
                 .header("Authorization", accessToken)
-                .delete(BASE_URL + "/api/auth/user");
+                .delete(BASE_URL + USER);
     }
 }
