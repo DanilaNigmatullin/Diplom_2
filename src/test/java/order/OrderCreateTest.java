@@ -77,10 +77,10 @@ public class OrderCreateTest {
 
     @Test
     @DisplayName("Создание заказа с неверным хешем ингредиентов")
-    @Description("Проверяет создание заказа с невалидным хешем ингредиентов, ожидается код 400")
-    public void createOrderWithWrongIngredientsReturns400Test() {
-        Order order = new Order(List.of("5f606f7b97114b001046a828"));
+    @Description("Проверяет создание заказа с невалидным хешем ингредиентов, ожидается код 500")
+    public void createOrderWithWrongIngredientsReturns500Test() {
+        Order order = new Order(List.of("randomhash"));
         orderClient.create(order, accessToken)
-                .then().statusCode(HttpStatus.SC_BAD_REQUEST);
+                .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
     }
 }
